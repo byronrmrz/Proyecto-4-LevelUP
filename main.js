@@ -1,18 +1,32 @@
 const pokemonContainer = document.getElementById(`pokemon-container`); //probar con id y con alt 96
 
-function fetchPokemon(id) { //cambiar a traer pokemon
-    fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+function fetchPokemon(url) { //cambiar a traer pokemon
+    fetch(url)
     .then((res) => res.json())
     .then((data) => {
     crearPokemon(data);
     }); 
 }
-function fetchPokemons(number) { //cambiar a traer pokemones
-    for(var i = 0; i <= number; i++) {
-        fetchPokemon(i)
-    }    
+
+function getPokemonsRandom(pokemons, limit) {
+    const shuffled = [...pokemons].sort(() => 0.5 - Math.random());
+  
+    return shuffled.slice(0, limit);
 }
+
+function fetchPokemons() { //cambiar a traer pokemones
+    fetch(`http://pokeapi.co/api/v2/pokemon/?limit=1154`)
+        .then((res) => res.json())
+        .then((data) => {
+            const randomPokemonResult = getPokemonsRandom(data.results, 6)
+            randomPokemonResult.forEach(pokemon => {
+                fetchPokemon(pokemon.url)
+            });
+        }) 
+}
+
 function crearPokemon(pokemon) {
+    console.log('pokemon', pokemon)
     const card = document.createElement(`div`);
     card.classList.add(`pokemon-block`);
 
@@ -43,4 +57,5 @@ function crearPokemon(pokemon) {
 
     pokemonContainer.appendChild(card);
 }
-fetchPokemons(6)
+
+fetchPokemons()
